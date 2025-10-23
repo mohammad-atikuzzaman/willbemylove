@@ -108,6 +108,7 @@
             justify-content: center;
             align-items: center;
             animation: fadeIn 0.5s ease;
+            overflow-y: auto;
         }
 
         .modal-content {
@@ -144,6 +145,7 @@
             color: #888;
             cursor: pointer;
             transition: color 0.3s;
+            padding: 10px;
         }
 
         .close-btn:hover {
@@ -170,7 +172,7 @@
             }
         }
 
-        /* New decorative elements */
+        /* Decorative elements */
         .floating-heart {
             position: absolute;
             font-size: 24px;
@@ -235,16 +237,34 @@
             h1 { font-size: 2.5rem; }
             p { font-size: 1rem; }
             button { padding: 10px 25px; font-size: 1rem; }
+
+            .modal-content {
+                padding: 1.5rem;
+                width: 90%;
+                max-width: none;
+            }
+
+            .modal h2 { font-size: 2rem; }
+            .modal p { font-size: 1rem; }
+
+            .close-btn {
+                font-size: 2rem;
+                top: 10px;
+                right: 10px;
+                padding: 15px;
+            }
+
+            /* মোবাইলে ডেকোরেশন দেখাবে, তাই display: none নেই */
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Will you be my love?</h1>
-        <p>Please say Yes 💕</p>
+        <p>Please say Yes</p>
         <div class="buttons">
-            <button id="yes-btn">Yes 💖</button>
-            <button id="no-btn">No 😐</button>
+            <button id="yes-btn">Yes</button>
+            <button id="no-btn">No</button>
         </div>
     </div>
 
@@ -263,78 +283,98 @@
         const closeBtn = document.querySelector('.close-btn');
         const container = document.querySelector('.container');
 
-        // Create decorative elements
-        function createFloatingHearts() {
-            for (let i = 0; i < 15; i++) {
+        // Initialize decorations based on screen size
+        function initDecorations() {
+            // Clear previous decorations
+            document.querySelectorAll('.floating-heart, .pulse-circle, .sparkle, .floating-text').forEach(el => el.remove());
+
+            const isMobile = window.innerWidth <= 600;
+            const heartCount = isMobile ? 6 : 15;
+            const pulseCount = isMobile ? 3 : 8;
+            const sparkleCount = isMobile ? 8 : 20;
+
+            // Floating Hearts
+            for (let i = 0; i < heartCount; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.className = 'floating-heart';
                     heart.innerHTML = '❤️';
                     heart.style.left = `${Math.random() * 100}%`;
                     heart.style.top = `${Math.random() * 100}%`;
-                    heart.style.fontSize = `${Math.random() * 20 + 15}px`;
-                    heart.style.animation = `float ${Math.random() * 10 + 10}s infinite ease-in-out`;
-                    heart.style.animationDelay = `${Math.random() * 5}s`;
+                    heart.style.fontSize = `${Math.random() * 15 + 12}px`;
+                    heart.style.animation = `float ${Math.random() * 8 + 8}s infinite ease-in-out`;
+                    heart.style.animationDelay = `${Math.random() * 3}s`;
                     document.body.appendChild(heart);
-                }, i * 300);
+                }, i * 400);
             }
-        }
 
-        function createPulseCircles() {
-            for (let i = 0; i < 8; i++) {
+            // Pulse Circles
+            for (let i = 0; i < pulseCount; i++) {
                 setTimeout(() => {
                     const circle = document.createElement('div');
                     circle.className = 'pulse-circle';
                     circle.style.left = `${Math.random() * 100}%`;
                     circle.style.top = `${Math.random() * 100}%`;
-                    circle.style.width = `${Math.random() * 100 + 50}px`;
+                    circle.style.width = `${Math.random() * 60 + 30}px`;
                     circle.style.height = circle.style.width;
-                    circle.style.animation = `pulse ${Math.random() * 10 + 10}s infinite linear`;
-                    circle.style.animationDelay = `${Math.random() * 5}s`;
+                    circle.style.animation = `pulse ${Math.random() * 8 + 8}s infinite linear`;
+                    circle.style.animationDelay = `${Math.random() * 3}s`;
                     document.body.appendChild(circle);
-                }, i * 500);
+                }, i * 600);
             }
-        }
 
-        function createSparkles() {
-            for (let i = 0; i < 20; i++) {
+            // Sparkles
+            for (let i = 0; i < sparkleCount; i++) {
                 setTimeout(() => {
                     const sparkle = document.createElement('div');
                     sparkle.className = 'sparkle';
                     sparkle.style.left = `${Math.random() * 100}%`;
                     sparkle.style.top = `${Math.random() * 100}%`;
-                    sparkle.style.animation = `sparkle ${Math.random() * 3 + 2}s infinite ease-in-out`;
-                    sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                    sparkle.style.animation = `sparkle ${Math.random() * 2 + 1.5}s infinite ease-in-out`;
+                    sparkle.style.animationDelay = `${Math.random() * 1.5}s`;
                     document.body.appendChild(sparkle);
-                }, i * 200);
+                }, i * 300);
+            }
+
+            // Floating Text (light on mobile)
+            if (!isMobile) {
+                const texts = ["Love", "Forever", "Together", "Happiness", "You & Me", "Always"];
+                setInterval(() => {
+                    const text = document.createElement('div');
+                    text.className = 'floating-text';
+                    text.textContent = texts[Math.floor(Math.random() * texts.length)];
+                    text.style.left = `${Math.random() * 100}%`;
+                    text.style.bottom = '0';
+                    text.style.animation = `float-text ${Math.random() * 10 + 10}s linear forwards`;
+                    document.body.appendChild(text);
+                    setTimeout(() => text.remove(), 15000);
+                }, 2000);
+            } else {
+                // Only 1-2 texts on mobile
+                setTimeout(() => {
+                    const texts = ["Love", "You & Me"];
+                    const text = document.createElement('div');
+                    text.className = 'floating-text';
+                    text.textContent = texts[Math.floor(Math.random() * texts.length)];
+                    text.style.left = `${Math.random() * 80 + 10}%`;
+                    text.style.bottom = '0';
+                    text.style.fontSize = '16px';
+                    text.style.animation = `float-text 8s linear forwards`;
+                    document.body.appendChild(text);
+                    setTimeout(() => text.remove(), 8000);
+                }, 2000);
             }
         }
 
-        function createFloatingText() {
-            const texts = ["Love", "Forever", "Together", "Happiness", "You & Me", "Always"];
-            
-            setInterval(() => {
-                const text = document.createElement('div');
-                text.className = 'floating-text';
-                text.textContent = texts[Math.floor(Math.random() * texts.length)];
-                text.style.left = `${Math.random() * 100}%`;
-                text.style.bottom = '0';
-                text.style.animation = `float-text ${Math.random() * 10 + 10}s linear forwards`;
-                document.body.appendChild(text);
-                
-                setTimeout(() => {
-                    text.remove();
-                }, 15000);
-            }, 2000);
-        }
+        // Initialize on load
+        initDecorations();
 
-        // Initialize decorative elements
-        createFloatingHearts();
-        createPulseCircles();
-        createSparkles();
-        createFloatingText();
+        // Re-init on resize
+        window.addEventListener('resize', () => {
+            setTimeout(initDecorations, 500);
+        });
 
-        // Move No button when mouse gets near or clicks it
+        // Move No button
         function moveNoButton() {
             const containerRect = container.getBoundingClientRect();
             const maxX = containerRect.width - noBtn.offsetWidth - 20;
@@ -348,22 +388,36 @@
             noBtn.style.top = `${randomY}px`;
         }
 
+        // Mouse/Touch near No button
         document.addEventListener('mousemove', (e) => {
             const noBtnRect = noBtn.getBoundingClientRect();
             const distanceX = Math.abs(e.clientX - (noBtnRect.left + noBtnRect.width / 2));
             const distanceY = Math.abs(e.clientY - (noBtnRect.top + noBtnRect.height / 2));
             const distance = Math.sqrt(distanceX ** 2 + distanceY ** 2);
-
             if (distance < 120) moveNoButton();
         });
 
-        // Prevent clicking No button
+        document.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const noBtnRect = noBtn.getBoundingClientRect();
+            const distanceX = Math.abs(touch.clientX - (noBtnRect.left + noBtnRect.width / 2));
+            const distanceY = Math.abs(touch.clientY - (noBtnRect.top + noBtnRect.height / 2));
+            const distance = Math.sqrt(distanceX ** 2 + distanceY ** 2);
+            if (distance < 120) moveNoButton();
+        }, { passive: true });
+
+        // Prevent No click
         noBtn.addEventListener('click', (e) => {
             e.preventDefault();
             moveNoButton();
         });
 
-        // Show modal on Yes click
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        }, { passive: false });
+
+        // Yes button
         yesBtn.addEventListener('click', () => {
             modal.style.display = 'flex';
             createConfetti();
